@@ -84,8 +84,6 @@ public class BOJ17142_연구소3 {
 		if(cnt == M) {
 //			System.out.println(Arrays.toString(picked));
 			BFS();
-//			System.out.println();
-//			System.out.println();
 			return;
 		}
 		
