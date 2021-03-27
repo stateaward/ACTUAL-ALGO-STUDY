@@ -15,7 +15,7 @@
 **MEMBER👩🏼‍💻👨‍💻**
 | 🔰 스장 | 스원 | 스원 | 스원 | 스원 |
 | :----: | :----: | :----: | :----: | :----: |
-|Gyuyong Lee@|keemdy@|김영현@|uaio88@|stateaward@|
+|[Gyuyong Lee](https://github.com/gyuyong290)|[keemdy](https://github.com/keemdy)|[김영현](https://github.com/KimYH-KU)|[uaio88](https://github.com/uaio88)|[stateaward](https://github.com/stateaward)|
 
 <br><br>
 
