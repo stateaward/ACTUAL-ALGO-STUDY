@@ -8,7 +8,8 @@ public class BOJ20055_컨베이어벨트위의로봇_김영현 {
 	static StringTokenizer st;
 	static int N, K, room[], ans;
 	static boolean robots[];
-
+	
+	
 	public static void main(String[] args) throws Exception {
 		br = new BufferedReader(new InputStreamReader(System.in));
 		bw = new BufferedWriter(new OutputStreamWriter(System.out));
