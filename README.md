@@ -15,7 +15,7 @@
 **MEMBER👩🏼‍💻👨‍💻**
 | 🔰 스장 | 스원 | 스원 | 스원 | 스원 |
 | :----: | :----: | :----: | :----: | :----: |
-|@gyuyong290|@kimyh03160|@keemdy311|@ailwoo1|@stateaward|
+|[Gyuyong Lee](https://github.com/gyuyong290)|[keemdy](https://github.com/keemdy)|[김영현](https://github.com/KimYH-KU)|[uaio88](https://github.com/uaio88)|[stateaward](https://github.com/stateaward)|
 
 <br><br>
 
@@ -60,16 +60,16 @@
 <br><br>
 **COMMIT MESSAGE**
 
-커밋메세지만 보고도 어떤 상태인지를 파악하기 위해 다음과 같은 규칙을 지향합니다.
+커밋메세지만 보고도 어떤 상태인지를 `직관적으로` 파악하기 위해 다음과 같은 규칙을 지향합니다.
 
-`푼사람 / 문제번호 / 특이사항`
+`푼사람 / 문제명 / 특이사항`
 
 _예시)_
 
 ```
-고길동 / BOJ1234 / 정답
-김도우너 / BOJ1234 / 시간초과
-마이콜 / BOJ1234 / 정답 - 리팩토링 필요
+고길동 / 아기상어 / 정답
+김도우너 / 문자열탐색하기 / 시간초과
+마이콜 / 연구소3 / 정답 - 리팩토링 필요
 ```
 
 <br><br><br><br><br>
