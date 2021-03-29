@@ -17,6 +17,14 @@ import java.util.Queue;
  * 4. 해당 위치 이동, 사이즈 증가, 초 증가 
  */
 
+/* 틀린 이유
+ * - BFS를 수행할 때, time+1로 시간값이 증가하므로 4방 탐색을 하는 단계마다 먹이 리스트에 넣으면 거리(시간)계산을 안해도 되겠다는 생각으로 접근
+ *   BFS(같은 거리가 나올 때마다, 식사)로 생각
+ * - 하지만, 몇몇 값에선, time값이 늦게 반영되어 동일한 시간값이지만 체킹을 못하고 넘어가는 경우가 발생..
+ * - 로직 자체를 while(BFS, 식사) 의 형태로 변경
+ * - BFS는 BFS로만 두고, 로직을 끼우지 말자...
+ */
+
 public class BOJ16236_아기상어_스터디_이주상 {
 
 	// 먹이가 될 물고기
@@ -85,27 +93,32 @@ public class BOJ16236_아기상어_스터디_이주상 {
 		q.add(shark);
 		isVisit[shark.x][shark.y] = true;
 		
-		while(!q.isEmpty()) {
-			Fish now = q.poll();
-			int time = now.time;
+		while(true) {
+			while(!q.isEmpty()) {
+				Fish now = q.poll();
+				int time = now.time;
 //			System.out.println("현재 탐색 위치 : " + now.x + "," + now.y + "/" + now.time);
-
-			
-			for (int k = 0; k < 4; k++) {
-				int nx = now.x + dx[k];
-				int ny = now.y + dy[k];
 				
-				// 범위 밖 -> 아웃
-				if(!(0 <= nx && nx < N && 0 <= ny && ny < N)) continue;
 				
-				// 4방 탐색해서, 먹을 수 있다? 먹이 리스트에 추가
-				if(map[nx][ny] < size && map[nx][ny] != 0) {
-					feedList.add(new Fish(nx, ny, time+1));
-				}
-				
-				if(map[nx][ny] <= size && !isVisit[nx][ny]) {
-					q.add(new Fish(nx, ny, time+1));
-					isVisit[nx][ny] = true;
+				for (int k = 0; k < 4; k++) {
+					int nx = now.x + dx[k];
+					int ny = now.y + dy[k];
+					
+					// 범위 밖 -> 아웃
+					if(!(0 <= nx && nx < N && 0 <= ny && ny < N) || isVisit[nx][ny]) continue;
+					
+					// [식사 가능] 먹이 리스트에 추가
+					if(map[nx][ny] < size && map[nx][ny] != 0) {
+						q.add(new Fish(nx, ny, time+1));
+						isVisit[nx][ny] = true;
+						feedList.add(new Fish(nx, ny, time+1));
+					}
+					
+					// [이동만 가능] 사이즈랑 동일 OR 비어있음(0)
+					if(map[nx][ny] == size || map[nx][ny] == 0) {
+						q.add(new Fish(nx, ny, time+1));
+						isVisit[nx][ny] = true;
+					}
 				}
 			}
 			
@@ -116,24 +129,26 @@ public class BOJ16236_아기상어_스터디_이주상 {
 				q.clear();
 				isVisit = new boolean[N][N];
 				
-//				System.out.println("===============");
-//				System.out.println("현재 상어 위치 : " + shark.x + "," + shark.y);
-//				System.out.println("현재 상어 사이즈 : " + size);
-//				System.out.println("현재 걸린 시간 : " + answer);
-//				
-//				System.out.println("식사를 마친 후의 모습");
-//				for (int i = 0; i < N; i++) {
-//					for (int j = 0; j < N; j++) {
-//						System.out.print(map[i][j]);
-//					}
-//					System.out.println();
-//				}
-//				System.out.println();
-
+	//			System.out.println("===============");
+	//			System.out.println("현재 상어 위치 : " + shark.x + "," + shark.y);
+	//			System.out.println("현재 상어 사이즈 : " + size);
+	//			System.out.println("현재 걸린 시간 : " + answer);
+	//			
+	//			System.out.println("식사를 마친 후의 모습");
+	//			for (int i = 0; i < N; i++) {
+	//				for (int j = 0; j < N; j++) {
+	//					System.out.print(map[i][j]);
+	//				}
+	//				System.out.println();
+	//			}
+	//			System.out.println();
+				
 				
 				// 다시 이동하는 큐(q)에다가 현재 상어 추가
 				q.add(shark);
 				isVisit[shark.x][shark.y] = true;
+			}else {
+				return;
 			}
 		}
 		
@@ -146,27 +161,32 @@ public class BOJ16236_아기상어_스터디_이주상 {
 		Collections.sort(feedList, new Comparator<Fish>() {
 			@Override
 			public int compare(Fish o1, Fish o2) {
-				if(o1.x == o2.x) {
-					if(o1.y > o2.y) {
-						return 1;
+				if(o1.time == o2.time) {
+					if(o1.x == o2.x) {
+						if(o1.y > o2.y) {
+							return 1;
+						}else {
+							return -1;
+						}
 					}else {
-						return -1;
+						if(o1.x > o2.x) {
+							return 1;
+						}else {
+							return -1;
+						}				
 					}
+				}else if(o1.time > o2.time){
+					return 1;
 				}else {
-					if(o1.x > o2.x) {
-						return 1;
-					}else {
-						return -1;
-					}				
+					return -1;
 				}
 			};
 		});
 		
 //		for (Fish f : feedList) {
-//			System.out.print(f.x + "," + f.y + "->" + f.time + "    ");
+//			System.out.print(f.x + "," + f.y + "(" + f.time + ")    ");
 //		}
 		
-//		System.out.println();
 		
 		Fish now = feedList.get(0);
 //		System.out.println("정렬의 선택 : " + now.x + "," + now.y);
