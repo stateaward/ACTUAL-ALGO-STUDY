@@ -16,12 +16,12 @@ import java.util.Queue;
 class Virus {
 	int x;
 	int y;
-	int level;
+	int time;
 	
 	public Virus(int x, int y, int level) {
 		this.x = x;
 		this.y = y;
-		this.level = level;
+		this.time = level;
 	}
 }
 
@@ -32,6 +32,7 @@ public class BOJ17142_연구소3 {
 	static int[] picked;
 	static int[][] map;
 	static boolean[][] isVisit;
+	static int blank;
 	
 	static int[] dx = {-1,1,0,0};
 	static int[] dy = {0,0,-1,1};
@@ -57,15 +58,22 @@ public class BOJ17142_연구소3 {
 			for (int j = 0; j < N; j++) {
 				int num = Integer.parseInt(input[j]);
 				
+				map[i][j] = num;
+				
 				if(num == 2) {
 					virusList.add(new Virus(i,j,1));
-					map[i][j] = -1;		// 바이러스 = -1
-				}else if(num == 1) {
-					map[i][j] = -8;		// 벽 = -8
+				}else if(num == 0) {
+					blank++;			// 비어있는 칸(바이러스가 퍼져야 할)의 갯수 
 				}
 			}
 		}
 		
+		if(blank == 0) {
+			System.out.println(0);
+			return;
+		}
+		
+		// 뽑은 조합을 저장하기 위한 배열
 		picked = new int[M];
 		
 		combination(0, 0);
@@ -82,7 +90,6 @@ public class BOJ17142_연구소3 {
 	// cnt(현재까지 뽑은 수), cur(현재 가르키는 번호)
 	private static void combination(int cnt, int cur) {
 		if(cnt == M) {
-//			System.out.println(Arrays.toString(picked));
 			BFS();
 			return;
 		}
@@ -102,14 +109,8 @@ public class BOJ17142_연구소3 {
 			isVisit[virusList.get(picked[i]).x][virusList.get(picked[i]).y] = true;
 		}
 		
-		int[][] copyMap = new int[N][N];
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				copyMap[i][j] = map[i][j];
-			}
-		}
-		
-		int lev = 0;
+		int time = 0;
+		int count = 0;
 		
 		while(!q.isEmpty()) {
 			Virus v = q.poll();
@@ -117,28 +118,41 @@ public class BOJ17142_연구소3 {
 			for (int k = 0; k < 4; k++) {
 				int nx = v.x + dx[k];
 				int ny = v.y + dy[k];
-				lev = v.level;
 				
-				// 범위 밖 아웃
-				if(!(0 <= nx && nx < N && 0 <= ny && ny < N)) continue;
 				
-				if(map[nx][ny] == 0 && !isVisit[nx][ny]) {
-					copyMap[nx][ny] = v.level;
+				// 이전에 있던 바이러스의 시간값을 받아오므로 계속 증가할 수 밖에 없음
+				time = v.time;
+				
+				// 범위 밖 OR 이미 방문 = 아웃
+				if(!(0 <= nx && nx < N && 0 <= ny && ny < N) || isVisit[nx][ny]) continue;
+				
+				// 빈칸이어서 확산한 경우)
+				if(map[nx][ny] == 0) {
 					isVisit[nx][ny] = true;
-					q.add(new Virus(nx,ny,v.level+1));
+					count++;
+					q.add(new Virus(nx,ny,v.time+1));
 				}
+				
+				// 확산은 못하지만 지나갈 수 있는 경우)
+				if(map[nx][ny] == 2) {
+					isVisit[nx][ny] = true;
+					q.add(new Virus(nx,ny,v.time+1));
+				}
+				
+			}
+			
+			// 만약 이미 빈칸이 채워졌다면 사전에 종료시킴으로써 시간값의 계속 증가를 방지
+			if(count == blank) {
+				time++;	// 이경우, 새로 뽑은 시간값 할당이 안되므로, 임의로 1 증가
+				break;
 			}
 		};
+	
 		
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if(copyMap[i][j] == 0) {
-					return;
-				}
-			}
-		}
+		if(count != blank) return;
 		
-		min = Math.min(min, lev-1);
+		// time-1의 이유 : 마지막에 +1한 상태를 q에 날리기 때문
+		min = Math.min(min, time-1);
 	}
 
 }
